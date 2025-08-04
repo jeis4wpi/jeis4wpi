@@ -1,4 +1,5 @@
-## Hi there 👋
+## Hi there 👋  John here
+- I enjoy all things science/math when using free open source software.
 
 <!--
 **jeis4wpi/jeis4wpi** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
