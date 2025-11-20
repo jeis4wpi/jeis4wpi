@@ -1,0 +1,6 @@
+alias e="emacsclient -t"
+alias kem="emacsclient -e '(kill-emacs)'"
+alias adduv="source $HOME/.local/bin/env"
+alias gc="git commit -m"
+alias cs="gh copilot suggest"
+alias ce="gh copilot explain"
