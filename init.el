@@ -137,3 +137,99 @@
 	(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
 	(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
 	(yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+;; https://andrewfavia.dev/posts/emacs-as-python-ide-again/#:~:text=Eglot%20is%20now%20an%20Emacs%20built%20in,built%2Din%20Emacs%20tools%20like%20xref%20and%20eldoc.
+
+
+;; simple example emacs eglot with bash perl python go and rust
+;; Ensure use-package is available
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; Load use-package
+(require 'use-package)
+
+;; Enable Eglot globally
+;(use-package eglot
+;  :straight t
+;  :defer t
+;  :hook ((bash-mode . eglot-ensure)
+;         (perl-mode . eglot-ensure)
+;         (python-mode . eglot-ensure)
+;         (go-mode . eglot-ensure)
+;         (rust-mode . eglot-ensure))
+;  :config
+  ;; Configure LSP servers for each language
+;  (add-to-list 'eglot-server-programs
+;               '(bash-mode . ("bash-language-server" "start")))
+;  (add-to-list 'eglot-server-programs
+;               '(perl-mode . ("perl-language-server")))
+;  (add-to-list 'eglot-server-programs
+;               '(python-mode . ("pyright-langserver" "--stdio")))
+;  (add-to-list 'eglot-server-programs
+;               '(go-mode . ("gopls" "-mode=stdio")))
+;  (add-to-list 'eglot-server-programs
+;               '(rust-mode . ("rust-analyzer")))
+  ;; Optional: Enable company-mode for completion
+;  (use-package company
+;    :straight t
+;    :hook (eglot-mode . company-mode)
+;    :config
+;    (setq company-minimum-prefix-length 1
+;          company-idle-delay 0.1))
+  ;; Optional: Enable eldoc for inline documentation
+;  (use-package eldoc
+;   :straight t
+;   :hook (eglot-mode . eldoc-mode)))
+
+
+;;simple example emacs eglot with bash perl python go R TeX and rust
+
+(use-package eglot
+  :ensure t
+  :hook ((bash-mode . eglot-ensure)
+         (perl-mode . eglot-ensure)
+         (python-mode . eglot-ensure)
+         (go-mode . eglot-ensure)
+         (R-mode . eglot-ensure)
+         (latex-mode . eglot-ensure)
+         (rustic-mode . eglot-ensure))
+  :config
+  ;; Bash: Use bash-language-server
+  (add-to-list 'eglot-server-programs '(bash-mode . ("bash-language-server" "start")))
+
+  ;; Perl: Use perl-language-server (if available)
+  (add-to-list 'eglot-server-programs '(perl-mode . ("perl-language-server")))
+
+  ;; Python: Use pylsp (python-lsp-server)
+  (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
+
+  ;; Go: Use gopls
+  (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
+
+  ;; R: Use languageserver (R's language server)
+  (add-to-list 'eglot-server-programs '(R-mode . ("languageserver")))
+
+  ;; TeX: Use digestif (Lua-based server)
+  (add-to-list 'eglot-server-programs '(latex-mode . ("digestif")))
+
+  ;; Rust: Use rust-analyzer
+  (add-to-list 'eglot-server-programs '(rustic-mode . ("rust-analyzer")))
+
+  ;; Optional: Enable formatting on save
+  (add-hook 'python-mode-hook (lambda () (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+  (add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+  (add-hook 'rustic-mode-hook (lambda () (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+  )
+
+
+;; (use-package uv-mode
+;;   :hook (python-mode . uv-mode-auto-activate-hook))
+
+(require 'uv-mode)
+(add-hook 'python-mode-hook #'uv-mode-auto-activate-hook)
+
+;; https://www.reddit.com/r/emacs/comments/13ezfq9/python_do_you_install_the_language_server/
+;; pipx install python-lsp-server
+;; pipx inject python-lsp-server pylsp-mypy
