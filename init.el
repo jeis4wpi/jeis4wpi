@@ -35,6 +35,15 @@
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
 
+(add-hook 'perl-mode-hook 'flymake-perlcritic-setup)
+
+;; emacs + perlcritic
+;; (defun turn-on-perlcritic-mode ()
+;;   (perlcritic-mode +1))
+
+;; (eval-after-load "cperl-mode"
+;;   '(add-hook 'cperl-mode-hook 'turn-on-perlcritic-mode))
+
 
 ;; (require 'perltidy)
 ;; (setq perltidy-on-save t)
@@ -233,3 +242,18 @@
 ;; https://www.reddit.com/r/emacs/comments/13ezfq9/python_do_you_install_the_language_server/
 ;; pipx install python-lsp-server
 ;; pipx inject python-lsp-server pylsp-mypy
+
+;; emacs eglot yaml lsp
+(add-hook 'yaml-mode-hook (lambda () (eglot-ensure)))
+;; https://redpenguin101.github.io/html/posts/2025_11_23_emacs_for_code_editing.html
+;; (setq-default display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)
+(global-hl-line-mode +1)
+(global-subword-mode 1)
+
+;; emacs lsp typescript languange server
+;; npm install -g typescript-language-server typescript
+
+(add-hook 'typescript-mode-hook #'eglot-hover-mode) ; or another eglot function
+;; emacs javascript lsp
+(add-hook 'js-mode-hook #'eglot-ensure)
