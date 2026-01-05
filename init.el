@@ -1,5 +1,4 @@
 
-
 (load "/opt/homebrew/opt/scimax/share/emacs/site-lisp/scimax/init.el")
 
 ;; Shorten yes/no answers to y/n
@@ -257,3 +256,29 @@
 (add-hook 'typescript-mode-hook #'eglot-hover-mode) ; or another eglot function
 ;; emacs javascript lsp
 (add-hook 'js-mode-hook #'eglot-ensure)
+
+;; emacs docs & add emac-lisp-mode lsp server ?
+;; (unless (package-installed-p 'lsp-mode)
+;;   (package-refresh-contents)
+;;   (package-install 'lsp-mode))
+;; (unless (package-installed-p 'lsp-sourcekit)
+;;   (package-refresh-contents)
+;;   (package-install 'lsp-sourcekit))
+;; (require 'lsp-mode)
+;; (add-hook 'emacs-lisp-mode-hook #'lsp)
+(add-hook 'before-save-hook 'time-stamp)
+(add-hook 'rust-mode-hook 'eglot-ensure)
+;; add clippy to rust emacs eglot
+;; https://rust-analyzer.github.io/book/other_editors.html
+(require 'clippy)
+;; (add-to-list 'eglot-server-programs
+;; 	     '((rust-ts-mode rust-mode) .
+;; 	       ("rust-analyzer" :initializationOptions (:check (:command "clippy")))))
+
+;; emacs lsp eglot c/c++ example config
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'c-or-c++-mode-hook 'eglot-ensure)
+
+;;
+(add-hook 'sql-mode-hook 'lsp)
