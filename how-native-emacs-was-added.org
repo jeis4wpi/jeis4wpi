@@ -1,0 +1,58 @@
+* home brew tail from native build @30
+
+#+begin_src sh :results output :exports both
+   5426  brew uninstall emacs
+   5427  brew uninstall --ignore-dependencies emacs
+   5428  brew install tree-sitter
+   5429  brew tap d12frosted/emacs-plus
+   5430  brew install emacs-plus@30 --with-native-comp    --with-xwidgets --with-imagemagick --with-mailutils --with-no-frame-refocus --with-modern-alecive-flatwoken-icon
+   5431  brew install emacs-plus@30 --with-xwidgets --with-imagemagick --with-mailutils --with-no-frame-refocus --with-modern-alecive-flatwoken-icon
+   5432  brew install emacs-plus@30 --with-xwidgets --with-imagemagick --with-mailutils  --with-modern-alecive-flatwoken-icon
+   5433  brew install emacs-plus@30 --with-xwidgets --with-imagemagick --with-mailutils
+   5434  ls /Applications
+   5435  brew uninstall --ignore-dependencies gcc\nbrew uninstall libgccjit\nbrew install gcc\nbrew install libgccjit
+
+   5438  brew install emacs-plus@30 --with-xwidgets --with-imagemagick --with-mailutils
+
+#+end_src
+
+* TODO Then the result after install needed
+
+#+begin_src sh :results output :exports both
+  ==> Caveats
+  ==> emacs-plus@30
+  Emacs.app and Emacs Client.app were installed to:
+    /opt/homebrew/opt/emacs-plus@30
+
+  For best Spotlight integration, copy the apps to /Applications:
+    cp -r /opt/homebrew/opt/emacs-plus@30/Emacs.app /Applications/
+    cp -r "/opt/homebrew/opt/emacs-plus@30/Emacs Client.app" /Applications/
+
+  The `emacs` command will automatically find the app in /Applications.
+
+  Alternatively, create Finder aliases (less reliable with Spotlight):
+    osascript -e 'tell application "Finder" to make alias file to posix file "/opt/homebrew/opt/emacs-plus@30/Emacs.app" at posix file "/Applications" with properties {name:"Emacs.app"}'
+
+  Custom icons and patches can be configured via ~/.config/emacs-plus/build.yml
+  See: https://github.com/d12frosted/homebrew-emacs-plus/blob/master/community/README.md
+
+  If Emacs fails to start with "Library not loaded" errors after upgrading
+  dependencies (e.g., tree-sitter, libgccjit), reinstall emacs-plus:
+    brew reinstall emacs-plus@30
+
+  Report any issues to https://github.com/d12frosted/homebrew-emacs-plus
+
+  To start d12frosted/emacs-plus/emacs-plus@30 now and restart at login:
+    brew services start d12frosted/emacs-plus/emacs-plus@30
+  Or, if you don't want/need a background service you can just run:
+    /opt/homebrew/opt/emacs-plus@30/bin/emacs --fg-daemon
+
+
+#+end_src
+
+* For now try:
+
+#+begin_src sh :results output :exports both
+~ % osascript -e 'tell application "Finder" to make alias file to posix file "/opt/homebrew/opt/emacs-plus@30/Emacs.app" at posix file "/Applications" with properties {name:"Emacs.app"}'
+alias file Emacs.app of folder Applications of startup disk
+#+end_src

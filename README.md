@@ -5,6 +5,10 @@
 
 [gnu elpa keyring update](https://elpa.gnu.org/packages/gnu-elpa-keyring-update.html)
 
+- Staring 2026 with minimal-emacs.d:
+
+[better defaults](https://github.com/jamescherti/minimal-emacs.d)
+
 <!--
 **jeis4wpi/jeis4wpi** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
