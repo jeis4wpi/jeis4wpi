@@ -285,9 +285,177 @@
   ;; editing experience without affecting cursor placement.
   (stripspace-restore-column t))
 
-
+;; stuck on this issue
+;;(setq google-this-keybind (kbd "C-x g"))
+;;(global-set-key (kbd "C-x g") 'google-this-mode-submap)
 (use-package google-this
   :config
-  (google-this-mode)) 
+  (google-this-mode 1))
 
-(global-set-key (kbd "C-x g") 'google-this-mode-submap) 
+
+;; Org mode is a major mode designed for organizing notes, planning, task
+;; management, and authoring documents using plain text with a simple and
+;; expressive markup syntax. It supports hierarchical outlines, TODO lists,
+;; scheduling, deadlines, time tracking, and exporting to multiple formats
+;; including HTML, LaTeX, PDF, and Markdown.
+(use-package org
+  :ensure t
+  :commands (org-mode org-version)
+  :mode
+  ("\\.org\\'" . org-mode)
+  :custom
+  (org-hide-leading-stars t)
+  (org-startup-indented t)
+  (org-adapt-indentation nil)
+  (org-edit-src-content-indentation 0)
+  ;; (org-fontify-done-headline t)
+  ;; (org-fontify-todo-headline t)
+  ;; (org-fontify-whole-heading-line t)
+  ;; (org-fontify-quote-and-verse-blocks t)
+  (org-startup-truncated t))
+
+
+;; emacs use package org-bullets
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+
+;; https://kaksikoivua.hashnode.dev/emacs-warning-on-macos-ls-does-not-support-dired
+;; without use-package
+(when (and (eq system-type 'darwin) (executable-find "gls"))
+  (setq insert-directory-program "gls"))
+
+
+;; https://www.gnu.org/software/emacs/manual/html_mono/modus-themes.html#Enable-and-load
+(mapc #'disable-theme custom-enabled-themes)
+(load-theme 'modus-vivendi :no-confirm)
+
+;; use global dirvis
+(dirvish-override-dired-mode)
+
+
+
+;; The markdown-mode package provides a major mode for Emacs for syntax
+;; highlighting, editing commands, and preview support for Markdown documents.
+;; It supports core Markdown syntax as well as extensions like GitHub Flavored
+;; Markdown (GFM).
+(use-package markdown-mode
+  :commands (gfm-mode
+             gfm-view-mode
+             markdown-mode
+             markdown-view-mode)
+  :mode (("\\.markdown\\'" . markdown-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("README\\.md\\'" . gfm-mode))
+  :bind
+  (:map markdown-mode-map
+        ("C-c C-e" . markdown-do)))
+
+
+;; 14 pt font size
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Menlo" :foundry "nil" :slant normal :weight regular :height 140 :width normal)))))
+
+
+
+;; (use-package erc
+;;   :config
+;;   ;; Set nickname and server
+;;   (setq erc-nick "jeis4wpi"
+;;         erc-server "irc.freenode.net"
+;;         erc-port 6697)
+;;
+;;   ;; Enable TLS (use erc-tls)
+;;   (setq erc-tls-verify nil) ; Optional: disable certificate verification
+;;
+;;   ;; Auto-join channels after identifying
+;;   (setq erc-autojoin-channels-alist '(("irc.freenode.net" . ("#emacs" "#emacs-beginners"))))
+;;
+;;   ;; Auto-reconnect on disconnect
+;;   (setq erc-server-auto-reconnect t)
+;;
+;;   ;; Enable auto-join and logging
+;;   (erc-autojoin-mode t)
+;;   (require 'erc-log)
+;;   (erc-log-mode t)
+;;   (setq erc-log-channels-directory "~/.erc/logs/")
+;; )
+
+
+;;; emacs use package php mode example configs
+(use-package php-mode
+  :ensure t
+  :mode (("\\.php\\'" . php-mode)
+         ("\\.inc\\'" . php-mode)
+         ("\\.module\\'" . php-mode))
+  :hook (php-mode . (lambda ()
+                      (emmet-mode +1)
+                      (flycheck-mode +1)
+                      (company-mode +1)
+                      (eldoc-mode +1)
+                      (smartparens-strict-mode +1)))
+  :init
+  (setq flycheck-phpcs-standard "PSR2"
+        flycheck-php-executable "/usr/bin/php"
+        flycheck-php-phpcs-executable "~/.composer/vendor/bin/phpcs"
+        flycheck-php-phpmd-executable "~/.composer/vendor/bin/phpmd"))
+
+
+;; (use-package mmm-mode
+;;   :ensure t
+;;   :config
+;;   (setq mmm-global-mode 'maybe)
+;;   (mmm-add-mode-ext-class nil "\\.php\\'" 'html-php)
+;;   (mmm-add-classes
+;;    '((html-php
+;;       :submode php-mode
+;;       :front "<\\?\$$php\$$?"
+;;       :back "\\?>")))
+
+;;; mmm-mode use package emacs config didn't work ?
+(use-package mmm-mode
+  :ensure t
+  :config
+  (mmm-add-mode-ext-class 'latex-mode nil 'latex-python)
+  (setq mmm-global-mode 'maybe))
+
+
+
+;;; use package emmet-mode emacs modern example
+(use-package emmet-mode
+  :ensure t
+  :after (web-mode css-mode scss-mode)
+  :commands (emmet-mode emmet-expand-line)
+  :config
+  ;; Move cursor between quotes after expansion
+  (setq emmet-move-cursor-between-quotes t)
+  ;; Disable auto-indentation after insert (optional)
+  (add-hook 'emmet-mode-hook (lambda () (setq emmet-indent-after-insert nil)))
+  ;; Auto-enable on relevant modes
+  (add-hook 'sgml-mode-hook 'emmet-mode)
+  (add-hook 'web-mode-hook 'emmet-mode)
+  (add-hook 'css-mode-hook 'emmet-mode)
+  ;; Key binding: C-j to expand line
+  :bind ("C-j" . emmet-expand-line)
+  ;; Optional: Customize keymap for navigation
+  :bind (:map emmet-mode-keymap
+         ("C-c [" . emmet-prev-edit-point)
+         ("C-c ]" . emmet-next-edit-point))
+  )
+
+
+
+(display-time)
