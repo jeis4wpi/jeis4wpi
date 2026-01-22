@@ -37,29 +37,6 @@
   ;; the mode `compile-angel-on-load-mode' was activated.
   (compile-angel-on-load-mode 1))
 
-(defun kill-default-buffer ()
-  "Kill buffer without prompt"
-  (interactive)
-  (let (kill-buffer-query-functions) (kill-buffer)))
-
-(global-set-key (kbd "C-x k") 'kill-default-buffer)
-
-
-(add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
-(defun perltidy-region ()
-  "Run perltidy on the current region."
-  (interactive)
-  (save-excursion
-    (shell-command-on-region (point) (mark) "perltidy -q" nil t)))
-(defun perltidy-defun ()
-  "Run perltidy on the current defun."
-  (interactive)
-  (save-excursion (mark-defun)
-                  (perltidy-region)))
-
-(add-to-list 'auto-mode-alist '("\\.pg\\'" . cperl-mode))
-
-
 ;; Corfu enhances in-buffer completion by displaying a compact popup with
 ;; current candidates, positioned either below or above the point. Candidates
 ;; can be selected by navigating up or down.
@@ -105,6 +82,79 @@
   :ensure t
   :config
   (vertico-mode))
+
+
+;; The flyspell package is a built-in Emacs minor mode that provides
+;; on-the-fly spell checking. It highlights misspelled words as you type,
+;; offering interactive corrections. In text modes, it checks the entire buffer,
+;; while in programming modes, it typically checks only comments and strings. It
+;; integrates with external spell checkers like aspell, hunspell, or
+;; ispell to provide suggestions and corrections.
+;;
+;; NOTE: flyspell-mode can become slow when using Aspell, especially with large
+;; buffers or aggressive suggestion settings like --sug-mode=ultra. This
+;; slowdown occurs because Flyspell checks words dynamically as you type or
+;; navigate text, requiring frequent communication between Emacs and the
+;; external Aspell process. Each check involves sending words to Aspell and
+;; receiving results, which introduces overhead from process invocation and
+;; inter-process communication.
+(use-package ispell
+  :ensure nil
+  :commands (ispell ispell-minor-mode)
+  :custom
+  ;; Set the ispell program name to aspell
+  (ispell-program-name "aspell")
+
+  ;; Define the "en_US" spell-check dictionary locally, telling Emacs to use
+  ;; UTF-8 encoding, match words using alphabetic characters, allow apostrophes
+  ;; inside words, treat non-alphabetic characters as word boundaries, and pass
+  ;; -d en_US to the underlying spell-check program.
+  (ispell-local-dictionary-alist
+   '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+
+  ;; Configures Aspell's suggestion mode to "ultra", which provides more
+  ;; aggressive and detailed suggestions for misspelled words. The language
+  ;; is set to "en_US" for US English, which can be replaced with your desired
+  ;; language code (e.g., "en_GB" for British English, "de_DE" for German).
+  (ispell-extra-args '(; "--sug-mode=ultra"
+                       "--lang=en_US")))
+
+;; The flyspell package is a built-in Emacs minor mode that provides
+;; on-the-fly spell checking. It highlights misspelled words as you type,
+;; offering interactive corrections.
+(use-package flyspell
+  :ensure nil
+  :commands flyspell-mode
+  :hook
+  (; (prog-mode . flyspell-prog-mode)
+   (text-mode . (lambda()
+                  (if (or (derived-mode-p 'yaml-mode)
+                          (derived-mode-p 'yaml-ts-mode)
+                          (derived-mode-p 'ansible-mode))
+                      (flyspell-prog-mode 1)
+                    (flyspell-mode 1)))))
+  :config
+  ;; Remove strings from Flyspell
+  (setq flyspell-prog-text-faces (delq 'font-lock-string-face
+                                       flyspell-prog-text-faces))
+
+  ;; Remove doc from Flyspell
+  (setq flyspell-prog-text-faces (delq 'font-lock-doc-face
+                                       flyspell-prog-text-faces)))
+
+;;; from LibreOffice
+;;; johne@Johns-MacBook-Air dict-en % cp -p *.dic ~/Library/Spelling
+;;; johne@Johns-MacBook-Air dict-en % cp -p *.aff ~/Library/Spelling
+;;; https://github.com/MArpogaus/emacs.d
+
+;; (use-package jinx
+;;   :if (executable-find "enchant-2")
+;;   :custom
+;;   (jinx-languages "en_US")
+;;   :bind (("M-$" . jinx-correct)
+;;          ("C-M-$" . jinx-languages))
+;;   :hook
+;;   (elpaca-after-init . global-jinx-mode))
 
 ;; Vertico leverages Orderless' flexible matching capabilities, allowing users
 ;; to input multiple patterns separated by spaces, which Orderless then
@@ -247,8 +297,8 @@
    consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
+   ;;   consult--source-bookmark consult--source-file-register
+   ;;   consult--source-recent-file consult--source-project-recent-file
    ;; :preview-key "M-."
    :preview-key '(:debounce 0.4 any))
   (setq consult-narrow-key "<"))
@@ -333,8 +383,6 @@
 (mapc #'disable-theme custom-enabled-themes)
 (load-theme 'modus-vivendi :no-confirm)
 
-;; use global dirvis
-(dirvish-override-dired-mode)
 
 
 
@@ -452,10 +500,330 @@
   :bind ("C-j" . emmet-expand-line)
   ;; Optional: Customize keymap for navigation
   :bind (:map emmet-mode-keymap
-         ("C-c [" . emmet-prev-edit-point)
-         ("C-c ]" . emmet-next-edit-point))
+              ("C-c [" . emmet-prev-edit-point)
+              ("C-c ]" . emmet-next-edit-point))
+  )
+
+
+;;; my configs - middle
+(display-time)
+
+(defun kill-default-buffer ()
+  "Kill buffer without prompt"
+  (interactive)
+  (let (kill-buffer-query-functions) (kill-buffer)))
+
+(global-set-key (kbd "C-x k") 'kill-default-buffer)
+
+
+(add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
+(defun perltidy-region ()
+  "Run perltidy on the current region."
+  (interactive)
+  (save-excursion
+    (shell-command-on-region (point) (mark) "perltidy -q" nil t)))
+(defun perltidy-defun ()
+  "Run perltidy on the current defun."
+  (interactive)
+  (save-excursion (mark-defun)
+                  (perltidy-region)))
+
+(add-to-list 'auto-mode-alist '("\\.pg\\'" . cperl-mode))
+
+;; use global dirvis
+;;(dirvish-override-dired-mode)
+
+;;; end my configs - middle
+
+
+
+
+;; Tree-sitter in Emacs is an incremental parsing system introduced in Emacs 29
+;; that provides precise, high-performance syntax highlighting. It supports a
+;; broad set of programming languages, including Bash, C, C++, C#, CMake, CSS,
+;; Dockerfile, Go, Java, JavaScript, JSON, Python, Rust, TOML, TypeScript, YAML,
+;; Elisp, Lua, Markdown, and many others.
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+;; This automates the process of updating installed packages
+(use-package auto-package-update
+  :ensure t
+  :custom
+  ;; Set the number of days between automatic updates.
+  ;; Here, packages will only be updated if at least 7 days have passed
+  ;; since the last successful update.
+  (auto-package-update-interval 7)
+
+  ;; Suppress display of the *auto-package-update results* buffer after updates.
+  ;; This keeps the user interface clean and avoids unnecessary interruptions.
+  (auto-package-update-hide-results t)
+
+  ;; Automatically delete old package versions after updates to reduce disk
+  ;; usage and keep the package directory clean. This prevents the accumulation
+  ;; of outdated files in Emacs’s package directory, which consume
+  ;; unnecessary disk space over time.
+  (auto-package-update-delete-old-versions t)
+
+  ;; Uncomment the following line to enable a confirmation prompt
+  ;; before applying updates. This can be useful if you want manual control.
+  ;; (auto-package-update-prompt-before-update t)
+
+  :config
+  ;; Run package updates automatically at startup, but only if the configured
+  ;; interval has elapsed.
+  (auto-package-update-maybe)
+
+  ;; Schedule a background update attempt daily at 10:00 AM.
+  ;; This uses Emacs' internal timer system. If Emacs is running at that time,
+  ;; the update will be triggered. Otherwise, the update is skipped for that
+  ;; day. Note that this scheduled update is independent of
+  ;; `auto-package-update-maybe` and can be used as a complementary or
+  ;; alternative mechanism.
+  (auto-package-update-at-time "10:00"))
+
+
+
+(use-package avy
+  :ensure t
+  :commands (avy-goto-char
+             avy-goto-char-2
+             avy-next)
+  :init
+  (global-set-key (kbd "C-'") 'avy-goto-char-2))
+
+;; Apheleia is an Emacs package designed to run code formatters (e.g., Shfmt,
+;; Black and Prettier) asynchronously without disrupting the cursor position.
+(use-package apheleia
+  :ensure t
+  :commands (apheleia-mode
+             apheleia-global-mode)
+  :hook ((prog-mode . apheleia-mode)))
+
+
+;; Helpful is an alternative to the built-in Emacs help that provides much more
+;; contextual information.
+(use-package helpful
+  :ensure t
+  :commands (helpful-callable
+             helpful-variable
+             helpful-key
+             helpful-command
+             helpful-at-point
+             helpful-function)
+  :bind
+  ([remap describe-command] . helpful-command)
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-key] . helpful-key)
+  ([remap describe-symbol] . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  :custom
+  (helpful-max-buffers 7))
+
+;; Enables automatic indentation of code while typing
+(use-package aggressive-indent
+  :ensure t
+  :commands aggressive-indent-mode
+  :hook
+  (emacs-lisp-mode . aggressive-indent-mode))
+
+;; Highlights function and variable definitions in Emacs Lisp mode
+(use-package highlight-defined
+  :ensure t
+  :commands highlight-defined-mode
+  :hook
+  (emacs-lisp-mode . highlight-defined-mode))
+
+
+;; Prevent parenthesis imbalance
+(use-package paredit
+  :ensure t
+  :commands paredit-mode
+  :hook
+  (emacs-lisp-mode . paredit-mode)
+  :config
+  (define-key paredit-mode-map (kbd "RET") nil))
+
+;; For paredit+Evil mode users: enhances paredit with Evil mode compatibility
+;; --------------------------------------------------------------------------
+;; (use-package enhanced-evil-paredit
+;;   :ensure t
+;;   :commands enhanced-evil-paredit-mode
+;;   :hook
+;;   (paredit-mode . enhanced-evil-paredit-mode))
+
+;; Displays visible indicators for page breaks
+(use-package page-break-lines
+  :ensure t
+  :commands (page-break-lines-mode
+             global-page-break-lines-mode)
+  :hook
+  (emacs-lisp-mode . page-break-lines-mode))
+
+;; Provides functions to find references to functions, macros, variables,
+;; special forms, and symbols in Emacs Lisp
+(use-package elisp-refs
+  :ensure t
+  :commands (elisp-refs-function
+             elisp-refs-macro
+             elisp-refs-variable
+             elisp-refs-special
+             elisp-refs-symbol))
+
+;; Allow Emacs to upgrade built-in packages, such as Org mode
+(setq package-install-upgrade-built-in t)
+
+;; When Delete Selection mode is enabled, typed text replaces the selection
+;; if the selection is active.
+(delete-selection-mode 1)
+
+;; Display the current line and column numbers in the mode line
+(setq line-number-mode t)
+(setq column-number-mode t)
+(setq mode-line-position-column-line-format '("%l:%C"))
+
+;; Display of line numbers in the buffer:
+;; (setq-default display-line-numbers-type 'relative)
+(dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook))
+  (add-hook hook #'display-line-numbers-mode))
+
+;; Set the maximum level of syntax highlighting for Tree-sitter modes
+(setq treesit-font-lock-level 4)
+
+(use-package which-key
+  :ensure nil ; builtin
+  :commands which-key-mode
+  :hook (after-init . which-key-mode)
+  :custom
+  (which-key-idle-delay 1.5)
+  (which-key-idle-secondary-delay 0.25)
+  (which-key-add-column-padding 1)
+  (which-key-max-description-length 40))
+
+(unless (and (eq window-system 'mac)
+             (bound-and-true-p mac-carbon-version-string))
+  ;; Enables `pixel-scroll-precision-mode' on all operating systems and Emacs
+  ;; versions, except for emacs-mac.
+  ;;
+  ;; Enabling `pixel-scroll-precision-mode' is unnecessary with emacs-mac, as
+  ;; this version of Emacs natively supports smooth scrolling.
+  ;; https://bitbucket.org/mituharu/emacs-mac/commits/65c6c96f27afa446df6f9d8eff63f9cc012cc738
+  (setq pixel-scroll-precision-use-momentum nil) ; Precise/smoother scrolling
+  (pixel-scroll-precision-mode 1))
+
+;; Display the time in the modeline
+(add-hook 'after-init-hook #'display-time-mode)
+
+;; Paren match highlighting
+(add-hook 'after-init-hook #'show-paren-mode)
+
+;; Track changes in the window configuration, allowing undoing actions such as
+;; closing windows.
+(add-hook 'after-init-hook #'winner-mode)
+
+(use-package uniquify
+  :ensure nil
+  :custom
+  (uniquify-buffer-name-style 'reverse)
+  (uniquify-separator "•")
+  (uniquify-after-kill-buffer-p t))
+
+;; Window dividers separate windows visually. Window dividers are bars that can
+;; be dragged with the mouse, thus allowing you to easily resize adjacent
+;; windows.
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Window-Dividers.html
+(add-hook 'after-init-hook #'window-divider-mode)
+
+;; Constrain vertical cursor movement to lines within the buffer
+(setq dired-movement-style 'bounded-files)
+
+;; Dired buffers: Automatically hide file details (permissions, size,
+;; modification date, etc.) and all the files in the `dired-omit-files' regular
+;; expression for a cleaner display.
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+
+;; Hide files from dired
+(setq dired-omit-files (concat "\\`[.]\\'"
+                               "\\|\\(?:\\.js\\)?\\.meta\\'"
+                               "\\|\\.\\(?:elc|a\\|o\\|pyc\\|pyo\\|swp\\|class\\)\\'"
+                               "\\|^\\.DS_Store\\'"
+                               "\\|^\\.\\(?:svn\\|git\\)\\'"
+                               "\\|^\\.ccls-cache\\'"
+                               "\\|^__pycache__\\'"
+                               "\\|^\\.project\\(?:ile\\)?\\'"
+                               "\\|^flycheck_.*"
+                               "\\|^flymake_.*"))
+(add-hook 'dired-mode-hook #'dired-omit-mode)
+
+;; dired: Group directories first
+(with-eval-after-load 'dired
+  (let ((args "--group-directories-first -ahlv"))
+    (when (or (eq system-type 'darwin) (eq system-type 'berkeley-unix))
+      (if-let* ((gls (executable-find "gls")))
+          (setq insert-directory-program gls)
+        (setq args nil)))
+    (when args
+      (setq dired-listing-switches args))))
+
+;; Enables visual indication of minibuffer recursion depth after initialization.
+(add-hook 'after-init-hook #'minibuffer-depth-indicate-mode)
+
+;; Configure Emacs to ask for confirmation before exiting
+(setq confirm-kill-emacs 'y-or-n-p)
+
+;; Enabled backups save your changes to a file intermittently
+(setq make-backup-files t)
+(setq vc-make-backup-files t)
+(setq kept-old-versions 10)
+(setq kept-new-versions 10)
+
+;; When tooltip-mode is enabled, certain UI elements (e.g., help text,
+;; mouse-hover hints) will appear as native system tooltips (pop-up windows),
+;; rather than as echo area messages. This is useful in graphical Emacs sessions
+;; where tooltips can appear near the cursor.
+(setq tooltip-hide-delay 20)    ; Time in seconds before a tooltip disappears (default: 10)
+(setq tooltip-delay 0.4)        ; Delay before showing a tooltip after mouse hover (default: 0.7)
+(setq tooltip-short-delay 0.08) ; Delay before showing a short tooltip (Default: 0.1)
+(tooltip-mode 1)
+
+;; Configure the built-in Emacs server to start after initialization,
+;; allowing the use of the emacsclient command to open files in the
+;; current session.
+(use-package server
+  :ensure nil
+  :commands server-start
+  :hook
+  (after-init . server-start))
+
+;;; emacs ein config use package
+
+(use-package ein
+  :ensure t
+  :config
+  ;; Optional: Customize EIN behavior
+  (setq ein:notebook-external-browser "firefox") ; or your preferred browser
+  (setq ein:output-area-in-notebook-mode t)     ; Show outputs inline
+  (setq ein:local-url "http://localhost:8888")  ; Default Jupyter server URL
   )
 
 
 
-(display-time)
+;;; use package emacs json-ts-mode emacs
+;; (use-package treesit
+;;   :ensure t
+;;   :config
+;;   (treesit-sync)
+;;   (add-to-list 'treesit-language-source-alist '(json . "https://github.com/tree-sitter/tree-sitter-json"))
+;;   (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode))
+;;   )
+
+;;; error "Tree-sitter for JSON isn’t available" + emacs + mac os
+;; (setq treesit-language-source-alist
+;;       '((json "https://github.com/tree-sitter/tree-sitter-json")))
+
+;;; https://github.com/MArpogaus/emacs.d
