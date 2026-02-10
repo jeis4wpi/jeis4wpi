@@ -758,7 +758,9 @@
                                "\\|^\\.project\\(?:ile\\)?\\'"
                                "\\|^flycheck_.*"
                                "\\|^flymake_.*"))
-(add-hook 'dired-mode-hook #'dired-omit-mode)
+;;
+;; this blocks pg files in OPL AS* stats dir
+;;;(add-hook 'dired-mode-hook #'dired-omit-mode)
 
 ;; dired: Group directories first
 (with-eval-after-load 'dired
@@ -881,3 +883,81 @@
 
 
 ;;; https://github.com/MArpogaus/emacs.d
+
+
+;;; https://lucidmanager.org/productivity/read-rss-feeds-with-emacs-and-elfeed/
+;; Configure Elfeed
+(use-package elfeed
+  :custom
+  (elfeed-db-directory
+   (expand-file-name "elfeed" user-emacs-directory))
+  (elfeed-show-entry-switch 'display-buffer)
+  :bind
+  ("C-c w e" . elfeed))
+
+;;; https://unwoundstack.com/blog/emacs-as-a-rust-ide.html
+;; rust might be TODO work?
+;; dotnet tool install --global csharp-ls
+;; export PATH="$PATH:/Users/johne/.dotnet/tools"
+
+
+;;;
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :hook ((csharp-mode . lsp)
+;;          (csharp-mode . lsp-ui-mode))
+;;   :init (setq lsp-keymap-prefix "C-c l")
+;;   :commands lsp)
+
+
+;;; emacs swift lsp config use package
+;;; https://www.swift.org/documentation/articles/zero-to-swift-emacs.html
+;;; Add MELPA and bootstrap use-package
+;; (require 'package)
+;; (setq package-enable-at-startup nil)
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; (package-initialize)
+;;
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
+;; (eval-when-compile (require 'use-package))
+
+;;; Locate sourcekit-lsp executable
+(defun find-sourcekit-lsp ()
+  (or (executable-find "sourcekit-lsp")
+      (and (eq system-type 'darwin)
+           (string-trim (shell-command-to-string "xcrun -f sourcekit-lsp")))
+      "/usr/local/swift/usr/bin/sourcekit-lsp"))
+
+;;; Swift development packages
+;; (use-package editorconfig
+;;   :ensure t
+;;   :config (editorconfig-mode +1))
+;;
+;; (use-package swift-mode
+;;   :ensure t
+;;   :mode "\\.swift\\'"
+;;   :interpreter "swift")
+;;
+;; (use-package rainbow-delimiters
+;;   :ensure t
+;;   :hook ((prog-mode . rainbow-delimiters-mode)))
+;;
+;; (use-package company
+;;   :ensure t
+;;   :config (global-company-mode +1))
+;;
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :commands lsp
+;;   :hook ((swift-mode . lsp)))
+;;
+;; (use-package lsp-ui
+;;   :ensure t)
+;;
+;; (use-package lsp-sourcekit
+;;   :ensure t
+;;   :after lsp-mode
+;;   :custom
+;;   (lsp-sourcekit-executable (find-sourcekit-lsp) "Find sourcekit-lsp"))
