@@ -9,6 +9,10 @@
 
 [better defaults](https://github.com/jamescherti/minimal-emacs.d)
 
+- Moving to purcell after post-init.el unstable from better defaults.
+
+[purcell](https://github.com/purcell/emacs.d.git)
+
 <!--
 **jeis4wpi/jeis4wpi** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
