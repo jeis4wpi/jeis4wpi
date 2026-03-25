@@ -10,3 +10,4 @@ alias checkports="sudo lsof -i -P | grep LISTEN"
 alias trailws="grep -E '[[:space:]]+$'"
 alias gdtrailws="git diff --ignore-space-at-eol"
 alias gitsubm="git submodule update --init --recursive "
+#bu_-765o4EzWsf5jAey6h5dQj4g2_-uhDkFZsYAIT9bqVo
