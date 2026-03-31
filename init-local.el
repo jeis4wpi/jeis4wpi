@@ -130,4 +130,45 @@
 (use-package julia-mode
   :ensure t)
 
+;;; emacs cmake mode automatically ?
+(use-package cmake-mode
+  :mode (("\\.cmake\\'" . cmake-mode)
+         ("CMakeLists\\.txt\\'" . cmake-mode)))
+
+;;; example emacs config straight set to t ?
+;; Ensure use-package is available
+;;(straight-use-package 'use-package)
+
+;; Enable straight.el for all use-package declarationsnn
+;;(setq straight-use-package-by-default t)
+;;(setq use-package-always-defer t) ;; Optional: defer loading by default
+
+
+;; close but startup fails.
+;; (package-vc-install '(combobulate :url "https://github.com/mickeynp/combobulate"))
+
+;; (use-package combobulate
+;;   :ensure t
+;;   :hook (julia-mode . combobulate-mode))
+
+;; (use-package julia-mode
+;;   :ensure t
+;;   :mode "\\.jl\\'"
+;;   :interpreter ("julia" . julia-mode))
+
+;; (use-package julia-snail
+;;   :ensure t
+;;   :hook (julia-mode . julia-snail-mode))
+
+
+;; install zig grammar for prelude emacs
+(use-package zig-ts-mode
+  :vc (:url "https://codeberg.org/meow_king/zig-ts-mode" :rev :newest)
+  :config
+  (add-to-list 'eglot-server-programs '(zig-ts-mode . ("zls")))
+  ;; Ensure grammars are installed if using treesit-auto
+  (require 'treesit-auto)
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
 (provide 'init-local)
