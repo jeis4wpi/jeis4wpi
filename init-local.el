@@ -114,8 +114,11 @@
 
 ;; still looking for cmake mode
 ;; treesit-error "Cannot find recipe for this language" cmake
-(add-to-list 'treesit-language-source-alist
-             '(cmake "https://github.com/Kitware/CMake"))
+;;
+;; didn't match Mickey P.
+;;
+;; (add-to-list 'treesit-language-source-alist
+;;              '(cmake "https://github.com/Kitware/CMake"))
 
 
 ;; what about - still very broken
@@ -170,5 +173,65 @@
   (require 'treesit-auto)
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
+
+
+;; how do I install tree sitter grammar for go emacs
+;; (setq treesit-language-source-alist
+;;       '((go "https://github.com/tree-sitter/tree-sitter-go")
+;;         (gomod "https://github.com/camdencheek/tree-sitter-go-mod"))
+;;       ((python "https://github.com/tree-sitter/tree-sitter-python")))
+
+;; grammer install python for emacs
+;; (setq treesit-language-source-alist
+;;       '((python "https://github.com/tree-sitter/tree-sitter-python")))
+
+;; M-x treesit-install-language-grammar RET python RET
+
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
+
+;;
+;; (setq treesit-language-source-alist
+;;       '((dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "v0.23.6")))
+
+;; https://www.masteringemacs.org/article/how-to-get-started-tree-sitter + dockerfile + gocmd
+
+(setq treesit-language-source-alist
+      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+        (c "https://github.com/tree-sitter/tree-sitter-c")
+        (cmake "https://github.com/uyha/tree-sitter-cmake")
+        (css "https://github.com/tree-sitter/tree-sitter-css")
+        (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+        (go "https://github.com/tree-sitter/tree-sitter-go")
+        (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+        (html "https://github.com/tree-sitter/tree-sitter-html")
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+        (json "https://github.com/tree-sitter/tree-sitter-json")
+        (make "https://github.com/alemuller/tree-sitter-make")
+        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+        (python "https://github.com/tree-sitter/tree-sitter-python")
+        (rust "https://github.com/tree-sitter/tree-sitter-rust")
+        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+
+;;; tree sitter grammar for lua code for emacs configs
+
+(use-package lua-ts-mode
+  :ensure t ;; Installs from MELPA or ELPA
+  :mode ("\\.lua\\'" . lua-ts-mode)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(lua "https://github.com/Azganoth/tree-sitter-lua")))
+
+;; Run this command manually after adding the source above:
+;; M-x treesit-install-language-grammar RET lua RET
+
+
+;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 
 (provide 'init-local)
