@@ -201,6 +201,7 @@
         (c "https://github.com/tree-sitter/tree-sitter-c")
         (cmake "https://github.com/uyha/tree-sitter-cmake")
         (css "https://github.com/tree-sitter/tree-sitter-css")
+        (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
         (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
         (elisp "https://github.com/Wilfred/tree-sitter-elisp")
         (go "https://github.com/tree-sitter/tree-sitter-go")
@@ -233,5 +234,27 @@
 
 ;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+
+;; configure rss feed emacs including sciencedaily and slashdot and sacha chua
+(setq-default elfeed-search-filter "@6-months-ago +unread")
+
+;; emacs config enable swift mode init.el
+
+
+;; Configure LSP (Eglot)
+(add-to-list 'eglot-server-programs '(swift-mode . ("sourcekit-lsp")))
+(add-hook 'swift-mode-hook #'eglot-ensure)
+
+;; Configure Formatting (Apheleia)
+;;;;;; Needs more work
+;; (straight-use-package 'apheleia)
+;; (require 'apheleia)
+;; (add-to-list 'apheleia-mode-alist '(swift-mode . swift-format))
+;; (add-to-list 'apheleia-formatters '(swift-format "swift-format" (buffer-file-name)))
+;; (apheleia-global-mode 1)
+
+
+(require 'swift-mode)
+
 
 (provide 'init-local)
