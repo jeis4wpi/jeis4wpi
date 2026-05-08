@@ -1,0 +1,25 @@
+#+title: Elfeed configuration + configure rss feed emacs including science programming
+
+* Feeds :elfeed:
+** Technology
+*** https://www.sciencedaily.com/rss.xml
+*** https://rss.slashdot.org/Slashdot/slashdot
+*** https://sachachua.com/blog/category/emacs-news/feed
+*** https://www.python.org/dev/feeds/news/
+*** https://dev.to/feed
+*** https://this-week-in-rust.org/rss.xml
+*** https://go.dev/blog/rss.xml
+*** https://www.linux-magazine.com/feeds/rss/
+*** https://www.hpcwire.com/feed/
+*** https://www.reddit.com/r/hpc.rss
+*** https://www.reddit.com/r/fortran.rss
+*** https://www.reddit.com/r/coding.rss
+*** https://www.reddit.com/r/emacs.rss
+*** https://www.reddit.com/r/nasa.rss
+*** https://www.reddit.com/r/physics.rss
+*** https://www.reddit.com/r/golang.rss
+*** https://www.reddit.com/r/programming.rss
+
+*** https://www.reddit.com/r/rust.rss
+*** https://terrytao.wordpress.com/feed/
+*** https://arxiv.org/abs/math/12345
