@@ -271,4 +271,19 @@
 (require 'swift-mode)
 
 
+(require 'ein)
+(require 'ein-notebook)
+
+;;; emacs .vue file mode ?
+(use-package vue-mode
+  :mode "\\.vue\\'"
+  :config (add-hook 'vue-mode-hook #'lsp))
+
+;; Configure ESS for R
+(use-package ess
+  :ensure t
+  :mode (("^[rR]$" . ess-r-mode)
+         ("\\.R$" . ess-r-mode)))
+
+
 (provide 'init-local)
