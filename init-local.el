@@ -286,4 +286,33 @@
          ("\\.R$" . ess-r-mode)))
 
 
+;;; emacs example groovy mode init setup
+(require 'groovy-mode)
+
+;; Auto-detect Groovy files
+(add-to-list 'auto-mode-alist '("\\.groovy\\'" . groovy-mode))
+(add-to-list 'auto-mode-alist '("\\.gradle\\'" . groovy-mode))
+(add-to-list 'auto-mode-alist '("/Jenkinsfile\\'" . groovy-mode))
+(add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
+
+;; emacs config example for .ex files
+(use-package elixir-mode
+  :ensure t
+  :mode ("\\.ex\\'" . elixir-mode)
+  :config
+  (setq elixir-indent-level 2))
+
+(use-package mix
+  :ensure t
+  :after elixir-mode)
+
+;; emacs edit json file but buffer read only ?
+;;; 2. Fix Read-Only Text Properties If C-x C-q fails or the buffer remains read-only, the text itself may have a read-only property (common in *Occur* or generated buffers).
+
+;; Use json-mode for .json files
+;;(add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
+
+;; Optional: Auto-pretty-print on save (requires json.el built-in)
+;;(add-hook 'json-mode-hook #'json-pretty-print-buffer)
+
 (provide 'init-local)
