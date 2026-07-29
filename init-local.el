@@ -39,6 +39,22 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Menlo" :foundry "nil" :slant normal :weight regular :height 140 :width normal)))))
 
+
+(use-package google-this
+  :ensure t)
+
+(use-package treesit-auto
+  :ensure t)
+
+(use-package swift-mode
+  :ensure t)
+
+(use-package ein
+  :ensure t)
+
+(use-package groovy-mode
+  :ensure t)
+
 ;; installed by package-install
 (global-set-key (kbd "C-x g") 'google-this)
 (google-this-mode 1)
@@ -89,7 +105,10 @@
 ;;(require 'company)
 ;;(require 'yasnippet)
 
-(require 'go-mode)
+(use-package go-mode
+  :ensure t)
+
+;; (require 'go-mode)
 (require 'eglot)
 (add-hook 'go-mode-hook 'eglot-ensure)
 
@@ -126,7 +145,9 @@
 (add-to-list 'treesit-language-source-alist
              '(typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")))
 
-
+;; how do I install ruby treesit grammar for emacs
+(add-to-list 'treesit-language-source-alist
+             '((ruby . "https://github.com/tree-sitter/tree-sitter-ruby")))
 
 
 ;;;https://github.com/JuliaEditorSupport/julia-emacs
@@ -238,6 +259,10 @@
 ;; configure rss feed emacs including sciencedaily and slashdot and sacha chua
 (setq-default elfeed-search-filter "@6-months-ago +unread")
 
+
+(use-package elfeed-org
+  :ensure t)
+
 ;; Load elfeed-org
 (require 'elfeed-org)
 
@@ -314,5 +339,24 @@
 
 ;; Optional: Auto-pretty-print on save (requires json.el built-in)
 ;;(add-hook 'json-mode-hook #'json-pretty-print-buffer)
+
+;; for .Rmd mode + emacs Rmd for R mode ? + remove 74 pgks (???)
+(require 'poly-R)
+(require 'poly-markdown)
+
+;; Associate .Rmd files with the polymode
+(add-to-list 'auto-mode-alist '("\\.Rmd\\'" . poly-markdown+r-mode))
+
+;; Optional: Use GitHub Flavored Markdown for fenced code blocks
+;; (setq markdown-code-block-braces t)
+;; (add-to-list 'auto-mode-alist '("\\.Rmd\\'" . poly-gfm+r-mode))
+
+;; what is *.qmd type of markdown and how to edit it with emacs ?
+(use-package quarto-mode
+  :mode ("\\.qmd\\'" . quarto-mode))
+;; not sure about the quarto order ?
+;; does poly-quarto-mode exist for emacs ?
+(add-to-list 'auto-mode-alist '( "\\.qmd\\'" . poly-quarto-mode))
+
 
 (provide 'init-local)
