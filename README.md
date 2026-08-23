@@ -1,7 +1,7 @@
 ## Hi there 👋  John Eismeier here
-- I enjoy all things science/math when using free open source software.
+- I enjoy all things science/math/stem/hpc.
 
-- Just had to in 2025:
+- In 2025:
 
 [gnu elpa keyring update](https://elpa.gnu.org/packages/gnu-elpa-keyring-update.html)
 
