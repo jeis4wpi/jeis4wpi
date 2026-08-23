@@ -8,6 +8,8 @@
 ;; Produce backtraces when errors occur: can be helpful to diagnose startup issues
 (setq debug-on-error t)
 
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
+
 (display-time)
 
 (defun kill-default-buffer ()
@@ -54,6 +56,15 @@
 
 (use-package groovy-mode
   :ensure t)
+
+(use-package poly-R
+  :ensure t)
+
+(use-package bats-mode
+  :ensure t)
+;; Example configuration adjustment for Flymake/Shellcheck
+(add-to-list 'auto-mode-alist '("\\.bats\\'" . bats-mode))
+
 
 ;; installed by package-install
 (global-set-key (kbd "C-x g") 'google-this)
@@ -357,6 +368,12 @@
 ;; not sure about the quarto order ?
 ;; does poly-quarto-mode exist for emacs ?
 (add-to-list 'auto-mode-alist '( "\\.qmd\\'" . poly-quarto-mode))
+
+;;; (error "‘sh-shellcheck-flymake’ is not suitable for shell type ‘bats’")
+
+;; (add-hook 'bats-mode-hook
+;;           (lambda ()
+;;             (setq-local sh-shell 'bash)))
 
 
 (provide 'init-local)
