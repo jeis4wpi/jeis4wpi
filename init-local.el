@@ -29,6 +29,31 @@
 (use-package swift-mode
   :ensure t)
 
+(use-package dumb-jump
+  :ensure t)
+
+(use-package cperl-mode
+  :ensure t)
+
+;; https://dev.to/nicholasbhubbard/how-i-use-emacs-to-write-perl-40e6
+(fset 'perl-mode 'cperl-mode)
+
+(setq cperl-indent-parens-as-block t)
+(setq cperl-close-paren-offset (- cperl-indent-level))
+
+(require 'flycheck)
+(setq flycheck-check-syntax-automatically '(mode-enabled save))
+(setq flycheck-display-errors-delay 0.3)
+
+(add-hook 'cperl-mode-hook 'flycheck-mode)
+
+(require 'dumb-jump)
+(setq dumb-jump-force-searcher 'ag)
+(add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+
+;; Associate .pg files with cperl-mode
+(add-to-list 'auto-mode-alist '("\\.pg\\'" . cperl-mode))
+
 ;;using purcell emacs starter kit add delete trailing whitespace in local-init.el ?
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; https://www.polyomica.com/weekly-emacs-tip-5-make-sure-files-always-end-with-a-newline/
